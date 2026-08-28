@@ -1,0 +1,27 @@
+{
+  "guides": [
+    {
+      "id": "first_guide",
+      "steps": [
+        {
+          "id": "first_guide_step1",
+          "type": 1,
+          "message": "first_guide_step1_message"
+        }
+      ]
+    },
+    {
+      "id": "second_guide",
+      "steps": [
+        {
+          "id": "second_guide_step1",
+          "type": 1
+        },
+        {
+          "id": "second_guide_step2",
+          "type": 1
+        }
+      ]
+    }
+  ]
+}
