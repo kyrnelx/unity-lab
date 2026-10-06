@@ -5,7 +5,8 @@ namespace Kyrnel.LinkGame
     /// <summary>
     /// 棋盘布局计算：根据节点尺寸、间距与边距计算每个格子的锚点位置。
     /// 调用 <see cref="Initialize"/> 传入棋盘行列后，整盘会以容器锚点 (0,0)
-    /// 为中心向四周对称展开，棋盘尺寸变化时始终居中，不再偏向角落。
+    /// 为中心向四周对称展开，棋盘尺寸变化时始终居中，不再偏向角落；
+    /// <see cref="XPad"/> / <see cref="YPad"/> 则作为整盘相对中心的微调偏移。
     /// </summary>
     public sealed class BoardLayout
     {
@@ -16,6 +17,8 @@ namespace Kyrnel.LinkGame
 
         private float _offsetX;
         private float _offsetY;
+        private int _columns = 1;
+        private int _rows = 1;
         private bool _initialized;
 
         public BoardLayout(float nodeSize, float spacing, float xPadding, float yPadding)
@@ -29,23 +32,38 @@ namespace Kyrnel.LinkGame
         /// <summary>单个格子的步长（节点尺寸 + 间距）。</summary>
         public float Step => _nodeSize + _spacing;
 
+        /// <summary>节点（格子）边长。视图层据此设置节点实际尺寸，保证与布局一致。</summary>
+        public float NodeSize => _nodeSize;
+
+        /// <summary>相邻格子之间的间距。</summary>
+        public float Spacing => _spacing;
+
+        /// <summary>整盘尺寸（宽 × 高），便于外部按其摆放背景等。</summary>
+        public Vector2 BoardSize => new Vector2(
+            Step * (_columns - 1) + _nodeSize,
+            Step * (_rows - 1) + _nodeSize);
+
         /// <summary>
         /// 传入棋盘行列数，计算使整盘以 (0,0) 为中心的偏移量。
         /// </summary>
         public void Initialize(int columns, int rows)
         {
-            // 棋盘总尺寸 = 步长 × (格子数-1) + 节点尺寸
-            float boardWidth = Step * (columns - 1) + _nodeSize;
-            float boardHeight = Step * (rows - 1) + _nodeSize;
+            _columns = Mathf.Max(1, columns);
+            _rows = Mathf.Max(1, rows);
 
-            // 将整盘平移到以 (0,0) 为中心：首格 = -boardWidth/2，末格 = +boardWidth/2
-            // pivot=0.5 时 anchoredPosition 即节点中心（格线）；棋盘最外缘为 offset ± nodeSize/2。
-            // 外缘中点 = offset + Step*(cols-1)/2，令其为 0 即居中：offset = -Step*(cols-1)/2
-            // （nodeSize/2 在两端相互抵消，不参与居中计算）
-            _offsetX = -Step * (columns - 1) * 0.5f;
-            _offsetY = -Step * (rows - 1) * 0.5f;
+            // 将整盘平移到以 (0,0) 为中心：pivot=0.5 时 anchoredPosition 即节点中心（格线）。
+            // 首格中心 = -Step*(n-1)/2，末格中心 = +Step*(n-1)/2，两者互为相反数即居中。
+            // padding 在此作为整盘相对中心的微调偏移叠加。
+            _offsetX = -Step * (_columns - 1) * 0.5f + _xPadding;
+            _offsetY = -Step * (_rows - 1) * 0.5f + _yPadding;
             _initialized = true;
         }
+
+        /// <summary>整盘 X 方向偏移（相对中心）。</summary>
+        public float XPad => _xPadding;
+
+        /// <summary>整盘 Y 方向偏移（相对中心）。</summary>
+        public float YPad => _yPadding;
 
         /// <summary>格子左下角锚点（节点 Pivot 在中心时的 anchoredPosition）。</summary>
         public Vector2 GetCellBottomLeft(int x, int y)
