@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if WECHAT
+
+using System;
 using UnityEngine;
 using WeChatWASM;
 
@@ -34,3 +36,5 @@ namespace Kyrnel.Platform
         }
     }
 }
+
+#endif

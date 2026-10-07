@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if WECHAT
+
+using System;
 using WeChatWASM;
 
 namespace Kyrnel.Platform
@@ -69,3 +71,5 @@ namespace Kyrnel.Platform
         }
     }
 }
+
+#endif

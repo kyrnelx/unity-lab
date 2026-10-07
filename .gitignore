@@ -15,13 +15,15 @@
 TextToolDatas/
 
 # YooAsset
-/UnityModules/Bundles/
-/UnityModules/Bundles.meta
+/UnityLab/AssetBundles
+/UnityLab/Bundles/
+/UnityLab/Bundles.meta
+/UnityLab/yoo
 
-/UnityModules/Assets/StreamingAssets/yoo/
-/UnityModules/Assets/StreamingAssets/yoo.meta
+/UnityLab/Assets/StreamingAssets/yoo/
+/UnityLab/Assets/StreamingAssets/yoo.meta
 
-/UnityModules/yoo
+/UnityLab/Assets/StreamingAssets
 
 # 日志文件
 *.log
