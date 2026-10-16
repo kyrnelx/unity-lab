@@ -10,16 +10,11 @@ namespace Kyrnel
     {
         private void Awake()
         {
-            /*var modelBundle = AssetBundle.LoadFromFile(Application.streamingAssetsPath + "/" + "model");
-            var modelCube = modelBundle.LoadAsset<GameObject>("Cube");
-            var modelSphere = modelBundle.LoadAsset<GameObject>("Sphere");
-            Instantiate(modelCube);
-            Instantiate(modelSphere);*/
-
-            StartCoroutine(LoadAssetAsync<GameObject>("model", "Cube", model => { Instantiate(model); }));
+            var cube = AssetBundleManager.Instance.LoadAsset<GameObject>("model", "Cube");
+            Instantiate(cube);
         }
 
-        private IEnumerator LoadAssetAsync<T>(string bundleName, string assetName, Action<T> callback) where T : UnityEngine.Object
+        private IEnumerator LoadAssetAsync<T>(string bundleName, string assetName, Action<T> callback = null) where T : UnityEngine.Object
         {
             string path = Path.Combine(Application.streamingAssetsPath, bundleName);
             var bundleReq = AssetBundle.LoadFromFileAsync(path);
@@ -35,7 +30,7 @@ namespace Kyrnel
 
             var assetReq = ab.LoadAssetAsync<T>(assetName);
             yield return assetReq;
-            
+
             callback?.Invoke(assetReq.asset as T);
         }
     }
